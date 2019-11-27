@@ -1,0 +1,321 @@
+transform needs a forward direction
+remove transform from model, make it an object "component"
+camera should have a transform component instead of extending matrix4f
+
+shader should need a transform as a parameter
+
+Make glfwsizecallbackit's own class
+
+more texture types besides USHORT
+
+mouse movement (MouseEvent class)
+
+problem in model initialization
+
+make shader attribute object/class
+
+CHANGELOG
+____________________________________________________________________________________________________________________________________________
+05/10/2018 - Fixed Attribute problem in vertex data, still needs work
+
+VertexData.java: 
+	-addAttribute needs to be reworked
+____________________________________________________________________________________________________________________________________________
+05/11/2018 -"Tidy...er"
+
+ColorShader.vs:
+	-Cleaned up code/comments/java-doc
+
+ColorShader.fs:
+	-Cleaned up code/comments/java-doc
+	-Added uniform vec4 main_color for vertex coloring
+
+ColorShader.java:
+	-Cleaned up code/comments/java-doc
+	-Removed debug textures
+	-Added color option to constructor (RGBA)
+
+Grid.java / Quad.java:
+	-Fixed shader to use the new ColorShader (RGBA)
+
+[Created] Vector.java
+
+Vector2f.java:
+	-Make it use the new Vector abstract class
+
+MouseEvent.java:
+	-Adjusted to new Vector2f
+
+Vector3f.java:
+	-Make it use the new Vector abstract class
+
+Transform.java / CameraController.java:
+	-Adjusted to new Vector3f
+
+Notes:
+	-Vector4f for the color (vec4) attribute to the ColorShader
+____________________________________________________________________________________________________________________________________________
+05/12/2018 - "Fun with color"
+
+[Created] Vector4f.java
+
+Vector3f.java / Vector2f.java:
+	-Created more get / set methods
+
+ShaderProgram.java:
+	-Created setUniform4f
+	-Created setUniform4fv
+	-Created getUniformLocation
+	-Modified setUniform1f to use getUniformLocation
+
+ColorShader.fs:
+	-Added Uniform vec4 main_color
+
+ColorShader.java:
+	-Added support for color
+	-Added random color maker (will be removed)
+
+Grid.java:
+	-Add support for the random color maker (temporary)
+
+Notes:
+	-Should add a blank constructor to the Vector class' (2f, 3f, 4f) to make empty arrays (0's)
+	-Remove temporary stuffs
+	-Need to remove texcoords from the shader
+____________________________________________________________________________________________________________________________________________
+05/12/2018 - "Here ... we ... go"
+
+Vector2f.java / Vector3f.java / Vector4f.java:
+	-Added blank (default) constructor for all zeros
+
+ColorShader.java / Grid.java:
+	-Removed temporary update method
+	-Removed support for multi-color
+
+ShaderProgram.java:
+	-Changed setUniform4fv to use vector4f's insted of float[] arrays
+	-Changed getUniformLocation from public to private (because of binding)
+
+[Created] VectorAttribute.java
+
+Notes:
+	-VectorAttribute should be able to replace VertexData, IndexData, and VBO
+	-Change Vector.java to Vectorf.java and create Vectori.java
+	-Need to create Vectori objects (Vector2i, 3i, 4i)
+	-Change VectorAttribute to VectorfAttribute and create VectoriAttribute
+____________________________________________________________________________________________________________________________________________
+05/13/2018 - "Lil tipsy, still functional"
+
+[Changed] Vector.java - Vectorf.java
+
+Vector2f.java / Vector3f.java / Vector4f.java:
+	-Updated code to work with Vectorf.java
+
+[Created] Vectori.java
+
+[Created] Vector2i.java
+
+[Created] Vector3i.java
+
+[Created] Vector4i.java
+
+Vectorf.java / Vectori.java:
+	-Added extract data public static method for getting a float array from an array of vectorf's
+	
+VertexfAttribute.java:
+	-Added initialization for the gl buffer
+	-Added cleanup method for the buffer
+
+Notes:
+	-Continue working on VectorAttribute.java, trying to get rid of vertexData, indexData, and VBO
+____________________________________________________________________________________________________________________________________________
+05/13/2018 - "More changes... Trying to figure out why I can't render two VAO's"
+
+VectorfAttribute.java:
+	-Added bind / unbind methods
+
+VAO.java / Model.java:
+	-Updated for new VectorfAttribute object
+	-Removed use of vertexData.java and VBO.java
+
+Quad.java / Grid.java:
+	-Removed texture coordinates
+	-Added support for the new VectorfAttribute object
+	-Removed use of vertexData.java and VBO.java
+
+Vectorf.java:
+	-Fixed no rendering issue with an index that wasn't incrementing
+
+[Removed VertexData.java]
+
+VBO.java:
+	-Added bind / unbind methods
+
+IndexData.java:
+	-Added support for VBO bind / unbind methods
+
+[Created] VectoriAttribute.java
+	-Notes: Needs to be renamed!
+
+Model.java / Grid.java / Quad.java:
+	-Added support for the new VectoriAttribute object
+
+[Removed] IndexData.java
+
+[Removed] VBO.java
+
+ShaderProgram.java:
+	-Cleaned up some code, added proper bind / unbind
+
+[Renamed] VectoriAttribute.java -> VBOi.java
+
+[Renamed] VectorfAttribute.java -> VBOf.java
+
+Notes:
+	-Go through CSMClient1.2 (Model.java) for some ideas on how to fix the issue
+____________________________________________________________________________________________________________________________________________
+05/14/2018 - ""
+
+[Created] DebugShader.java
+
+[Created] DebugShader.vs
+
+[Created] DebugShader.fs
+
+Grid.java:
+	-Changed shader to the new debug shader
+
+ShaderProgram.java:
+	-Added bindAttributes abstract method
+	-Added bindAttribute protected method
+
+ColorShader.java / DebugShader.java:
+	-Added support for the new attribute bind method
+
+Notes:
+	Create VAO:
+	-glGenVertexArray
+	-glBindVertexArray
+	
+	-glGenBuffers (indices)
+	-glBindBuffer(ElementArray)
+	-glBufferData
+
+	-glGenBuffers (vbo #1 "position")
+	-glBindBuffer
+	-glBufferData
+	-glVertexAttribPointer
+	-glBindBuffer (unbind)
+
+	-glGenBuffers (vbo #2 "texcoords")
+	-glBindBuffer
+	-glBufferData
+	-glVertexAttribPointer
+	-glBindBuffer (unbind)
+
+	-glBindVertexArray (unbind)
+
+	Create Shader Program:
+	-
+____________________________________________________________________________________________________________________________________________
+05/15/2018 - "Debugging"
+
+Notes:
+	
+	Create VAO:
+	-glGenVertexArray
+	-glBindVertexArray
+
+	Create VBO (vertex)
+	-glGenBuffers
+	-glBindBuffer
+	-glBufferData
+	-glEnableVertexAttribArray
+	-glVertexAttribPointer
+	-glBindBuffer (unbind)
+
+	Create VBO (index)
+	-glGenBuffers
+	-glBindBuffer
+	-glBufferData
+	-glBindBuffer (unbind)
+
+	VAO
+	-glBindVertexArray (unbind)
+
+	---
+	
+	Create Shader (vertex):
+	-glCreateShader
+	-glShaderSource
+	-glCompileShader
+	
+	Create Shader (fragment):
+	-glCreateShader
+	-glShaderSource
+	-glCompileShader
+
+	Create Shader Program:
+	-glAttachShader (vertex)
+	-glAttachShader (fragment)
+	-glBindAttribLocation (position)
+	-glLinkProgram
+	-glValidateProgram
+
+	[Repeat x1]
+
+____________________________________________________________________________________________________________________________________________
+05/17/2018 - ""
+
+ColorShader.vs / DebugShader.vs:
+	-Removed matrix multiplication for debugging purposes
+
+Grid.java:
+	-Added vertex_data_debug (which emulates a second quad with an offset)
+
+Quad.java:
+	-Added a slight offset (z axis) for debugging
+
+VBOf.java: (Pretty sure the problem doesn't lay here)
+	-Playing around with pointers and attributes to see if i can't find the issue
+	-Checked attribute index
+	-Checked target
+	-Checked position data (extractData)
+	-Checked VAO handle
+
+VBOi.java: (Pretty sure the problem doesn't lay here)
+	-Checked target
+	-Checked position data (extractData)
+	-Checked VAO handle
+
+VAO.java: (Pretty sure the problem doesn't lay here)
+	-Added enable / disable attribute arrays in the render method (did not help)
+	-Checked handle
+	-Changed shader to bind outside of the VAO rather then inside the VAO's binding (didn't help)
+	-Removed shaders bind / unbind so all vao's will be default white (didn't help, but now i know it's nothing to do with the shader)
+	-Replaces shaders bind / unbind so i can tell whats what
+
+TestGame.java:
+	-Rotating VAO's initialization (models[0] models[1], models[1] models[0])
+
+Notes:
+	-possibly remove VAO.java > render() > glEnable / glDisableVertexAttribArray
+	-Same issue when not using a shader to render (shader's not the problem)
+	-Pretty sure the problem is during initialization, nohing happends when changing the render / update order
+	-
+____________________________________________________________________________________________________________________________________________
+05/19/2018 - "YES"
+
+[RESOLVED] Issue was glDrawElements(mode, count, type, offeset) not glDrawElements(mode, count, type, handle)
+[Created] CSMClient 1.5
+
+____________________________________________________________________________________________________________________________________________
+
+
+
+
+
+
+
+
+
